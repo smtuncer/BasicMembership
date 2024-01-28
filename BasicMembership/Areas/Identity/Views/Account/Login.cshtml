@@ -1,0 +1,54 @@
+﻿@model LoginVM
+
+
+<div class="card-body">
+
+    @if (SignInManager.IsSignedIn(User))
+    {
+        @if (User.IsInRole(Role.Role_Admin))
+        {
+            <h3 class="text-primary text-center"><a asp-area="Admin" asp-controller="User" asp-action="UserList">Admin Paneli</a></h3>
+        }
+        else if (User.IsInRole(Role.Role_User))
+        {
+            <h3 class="text-primary text-center"><a asp-area="Admin" asp-controller="User" asp-action="UserList">User</a></h3>
+        }
+    }
+    else
+    {
+        <p class="login-box-msg">Giriş Yap</p>
+        <form method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="input-group mb-3">
+                <input type="email" class="form-control" placeholder="Email" asp-for="Email" required>
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-envelope"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="input-group mb-3">
+                <input type="password" class="form-control" placeholder="Parola" asp-for="Password" required>
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-lock"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-8">
+                    <div class="icheck-primary">
+                        <input type="checkbox" id="remember" asp-for="RememberMe">
+                        <label for="remember">
+                            Beni Hatırla
+                        </label>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <button type="submit" class="btn btn-primary btn-block">Giriş</button>
+                </div>
+            </div>
+        </form>
+    }
+
+</div>

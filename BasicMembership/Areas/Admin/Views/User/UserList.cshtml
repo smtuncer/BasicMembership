@@ -1,0 +1,163 @@
+﻿@model IEnumerable<UserListVM>
+
+<section class="content">
+    <div class="content-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-info card-outline mt-5">
+                    <div class="card-header">
+                        <h3 class="card-title">Kullanıcı Listesi</h3> 
+                    </div>
+                    <div class="card-body p-0 table-responsive">
+                        <table class="table table-bordered table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Ad Soyad</th>
+                                    <th>Email</th>
+                                    <th>Telefon</th>
+                                    <th>Yetki</th>
+                                    <th>İşlem</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@item.NameSurname</td>
+                                        <td>@item.Email</td>
+                                        <td>@item.PhoneNumber</td>
+                                        <td>
+                                            @foreach (var role in item.Roles)
+                                            {
+                                                <span>@role </span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <a class="btn btn-info btn-xs" asp-action="GetUser" asp-route-id="@item.Id">
+                                                <i class="fa fa-book"></i>
+                                            </a>
+                                            <button type="button" class="btn btn-success btn-xs" data-toggle="modal" data-target="#ChangeUserRole-@item.Id">
+                                                <i class="fas fa-user-cog"></i>
+                                            </button>
+                                            <div class="modal fade" id="ChangeUserRole-@item.Id">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content bg-success">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">
+                                                                Kullanıcının Yetkisini Değiştir
+                                                            </h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">×</span>
+                                                            </button>
+                                                        </div>
+                                                        <form asp-action="ChangeUserRole" method="post">
+                                                            <input type="hidden" name="id" value="@item.Id" />
+                                                            <div class="modal-body">
+                                                                <p><strong>Ad Soyad:</strong> @item.NameSurname</p>
+                                                                <p><strong>Email:</strong> @item.Email</p>
+                                                                <p><strong>Telefon Numarası:</strong> @item.PhoneNumber</p>
+                                                                <p>
+                                                                    <strong>Yetki:</strong>    @foreach (var role in item.Roles)
+                                                                    {
+                                                                        <span>@role </span>
+                                                                    }
+                                                                </p>
+                                                                <div class="form-group">
+                                                                    <label>Yeni Yetki</label>
+                                                                    <select name="role" class="custom-select form-control" required>
+                                                                        <option value="">Seçiniz..</option>
+                                                                        <option value="@Role.Role_Admin">@Role.Role_Admin</option>
+                                                                        <option value="@Role.Role_User">@Role.Role_User</option> 
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="submit" class="btn btn-dark">Yetki Değiştir</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            @if (item.LockoutEnd == null)
+                                            {
+                                                <button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#LockUser-@item.Id">
+                                                    <i class="fas fa-lock"></i>
+                                                </button>
+                                                <div class="modal fade" id="LockUser-@item.Id">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content bg-danger">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title">
+                                                                    Kullanıcıyı Engelle
+                                                                </h5>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">×</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <p><strong>Ad Soyad:</strong> @item.NameSurname</p>
+                                                                <p><strong>Email:</strong> @item.Email</p>
+                                                                <p><strong>Telefon Numarası:</strong> @item.PhoneNumber</p>
+                                                                <p>
+                                                                    <strong>Yetki:</strong>    @foreach (var role in item.Roles)
+                                                                    {
+                                                                        <span>@role </span>
+                                                                    }
+                                                                </p>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <a asp-action="LockUser" asp-route-id="@item.Id" class="btn btn-dark">Engelle</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <button type="button" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#UnlockUser-@item.Id">
+                                                    <i class="fas fa-lock-open"></i>
+                                                </button>
+                                                <div class="modal fade" id="UnlockUser-@item.Id">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content bg-warning">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title">
+                                                                    Kullanıcının Engelini Kaldır
+                                                                </h5>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">×</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <p><strong>Ad Soyad:</strong> @item.NameSurname</p>
+                                                                <p><strong>Email:</strong> @item.Email</p>
+                                                                <p><strong>Telefon Numarası:</strong> @item.PhoneNumber</p>
+                                                                <p>
+                                                                    <strong>Yetki:</strong>
+                                                                    @foreach (var role in item.Roles)
+                                                                    {
+                                                                        <span>@role </span>
+                                                                    }
+                                                                </p>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <a asp-action="UnlockUser" asp-route-id="@item.Id" class="btn btn-dark">Engeli Kaldır</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer clearfix">
+                        <a class="btn btn-primary btn-sm float-right" asp-action="AddUser">Yeni Kullanıcı Ekle</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
